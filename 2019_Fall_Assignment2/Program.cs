@@ -1,4 +1,13 @@
-﻿using System;
+﻿/*
+    Author: Mrudhula Murali,Vibhu Kumar,Sudeep Rajesh
+    Date: 10/06/2019
+    Comments: This script demonstrates use of algorithms and implementing in specific time complexity, 
+                    data structures and problem solving. 
+*/
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace _2019_Fall_Assignment2
 {
@@ -6,6 +15,7 @@ namespace _2019_Fall_Assignment2
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine(args);
             int target = 5;
             int[] nums = { 1, 3, 5, 6 };
             Console.WriteLine("Position to insert {0} is = {1}\n", target, SearchInsert(nums, target));
@@ -17,20 +27,26 @@ namespace _2019_Fall_Assignment2
             DisplayArray(intersect);
             Console.WriteLine("\n");
 
+            //int[] A = { 9, 9, 8, 8 };
             int[] A = { 5, 7, 3, 9, 4, 9, 8, 3, 1 };
+            //Print the largest unique number in an array.
             Console.WriteLine("Largest integer occuring once = {0}\n", LargestUniqueNumber(A));
 
             string keyboard = "abcdefghijklmnopqrstuvwxyz";
             string word = "cba";
             Console.WriteLine("Time taken to type with one finger = {0}\n", CalculateTime(keyboard, word));
 
+            //int[,] image = { { 1, 1, 0, 0 }, { 1, 0, 0, 1 }, { 0, 1, 1, 1 }, { 1, 0, 1, 0 } };
             int[,] image = { { 1, 1, 0 }, { 1, 0, 1 }, { 0, 0, 0 } };
+            //Call the FlipAndInvertImage method .
             int[,] flipAndInvertedImage = FlipAndInvertImage(image);
+            //Print the resulting flipped and inverted image.
             Console.WriteLine("The resulting flipped and inverted image is:\n");
             Display2DArray(flipAndInvertedImage);
             Console.Write("\n");
 
             int[,] intervals = { { 0, 30 }, { 5, 10 }, { 15, 20 } };
+            //int[,] intervals = { { 7, 10 }, { 2, 4 } };
             int minMeetingRooms = MinMeetingRooms(intervals);
             Console.WriteLine("Minimum meeting rooms needed = {0}\n", minMeetingRooms);
 
@@ -41,18 +57,21 @@ namespace _2019_Fall_Assignment2
             Console.Write("\n");
 
             string s = "abca";
-            if(ValidPalindrome(s)) {
+            if (ValidPalindrome(s))
+            {
                 Console.WriteLine("The given string \"{0}\" can be made PALINDROME", s);
             }
             else
             {
                 Console.WriteLine("The given string \"{0}\" CANNOT be made PALINDROME", s);
             }
+
+            Console.ReadLine();
         }
 
         public static void DisplayArray(int[] a)
         {
-            foreach(int n in a)
+            foreach (int n in a)
             {
                 Console.Write(n + " ");
             }
@@ -60,9 +79,9 @@ namespace _2019_Fall_Assignment2
 
         public static void Display2DArray(int[,] a)
         {
-            for(int i=0;i<a.GetLength(0);i++)
+            for (int i = 0; i < a.GetLength(0); i++)
             {
-                for(int j=0;j<a.GetLength(1);j++)
+                for (int j = 0; j < a.GetLength(1); j++)
                 {
                     Console.Write(a[i, j] + "\t");
                 }
@@ -98,18 +117,58 @@ namespace _2019_Fall_Assignment2
             return new int[] { };
         }
 
+        /*Given an array of integers A, this method  return the largest integer that only occurs once.
+         If no integer occurs once, return -1.
+         Time complexity of the method should not exceed O(n). */
         public static int LargestUniqueNumber(int[] A)
         {
             try
             {
-                // Write your code here
+                Dictionary<int, int> distinctDictionary = new Dictionary<int, int>();
+                int largestNumber;
+
+                /*Loop through the input array.Here we are looping through n elements of array and the time complexity
+                 will be O(n).*/
+                for (int i = 0; i < A.Length; i++)
+                {
+                    //When adding the values from array to the dictionary and remove all the values which is repeating more than once.
+                    if (distinctDictionary.ContainsValue(A[i]))
+                    {
+                        int keyValue = distinctDictionary.FirstOrDefault(x => x.Value == A[i]).Key;
+                        distinctDictionary.Remove(keyValue);
+                    }
+                    //Add array values to dictionary
+                    else
+                    {
+                        distinctDictionary.Add(i, A[i]);
+                    }
+                }
+                //If the there are no unique values in the array the dictionary will be empty and will output -1. 
+                if (distinctDictionary.Count == 0)
+                {
+                    largestNumber = -1;
+                }
+                //we can get the largest value from the input by taking the max in dictionary.
+                else
+                {
+                    largestNumber = distinctDictionary.Values.Max();
+                }
+                //Return the largest number.
+                return largestNumber;
             }
-            catch
+            catch (Exception ex)
             {
-                Console.WriteLine("Exception occured while computing LargestUniqueNumber()");
+                Console.WriteLine("Exception occured while computing LargestUniqueNumber()" + ex.Message);
+                return -1;
             }
 
-            return 0;
+        }
+
+        public static int LargestNumber(Dictionary<int, int> sarray)
+        {
+            //int value;
+            int value = sarray.Values.Max();
+            return value;
         }
 
         public static int CalculateTime(string keyboard, string word)
@@ -126,25 +185,44 @@ namespace _2019_Fall_Assignment2
             return 0;
         }
 
+        /*This method when given a binary matrix A, will flip the image horizontally, then invert it, 
+        and return the resulting image.*/
         public static int[,] FlipAndInvertImage(int[,] A)
         {
             try
             {
-                // Write your code here
+                //initialize a temporaray array
+                int[,] tempArray = new int[1,2];
+                //get the length of the array.
+                int lastElement = A.GetUpperBound(0);
+
+                //Loop through the inner and outer array to loop through all the elements in the array.
+                for (int i = 0; i < A.GetLength(0); i++)
+                {
+                    for (int j = 0; j < A.GetLength(1) && lastElement >= 0 && j<= lastElement; j++, lastElement--)
+                    {
+                        /*Flip the elements in the array using temporary array and then invert the values of array from 1 to 0 
+                        and 0 to 1.*/
+                        tempArray[0, 0] = (A[i, j] == 0) ? 1 : 0;
+                        A[i, j] = (A[i, lastElement] == 0) ? 1 : 0;
+                        A[i, lastElement] = tempArray[0, 0];
+                    }
+                    lastElement = A.GetUpperBound(0);
+                }
             }
             catch
             {
                 Console.WriteLine("Exception occured while computing FlipAndInvertImage()");
             }
-
-            return new int[,] { };
+            //return the resulting output array after flip and invert.
+            return A;
         }
 
         public static int MinMeetingRooms(int[,] intervals)
         {
             try
-            {
-                // Write your code here
+            {              
+                //Write your code here
             }
             catch
             {
@@ -154,32 +232,89 @@ namespace _2019_Fall_Assignment2
             return 0;
         }
 
+        /*Given an array of integers A sorted in non-decreasing order, return an array of the squares of each number,
+            also in sorted non-decreasing order.The time complexity of the method should not exceed O(n)*/
         public static int[] SortedSquares(int[] A)
         {
+            //initialize the output array.
+            int[] squareArray = new int[A.Length];
             try
             {
-                // Write your code here
+
+                int squareArrCnt = 0;
+                int negativeCount = 0;
+
+                /*Get the count of the negative numbers in the array.Here we are looping through n elements of 
+                array and the time complexity will be O(n)*/
+                for (int i = 0; i < A.Length; i++)
+                {
+                    if (A[i] >= 0)
+                    {
+                        //break when the number in the array is positive.
+                        break;
+                    }
+                    //increment the count when the number in the array is negative.
+                    negativeCount++;
+                }
+                //get the index of the smallest negative number in the array since that will be largest when squared.
+                int negativeLoop = negativeCount - 1;
+                //get the starting index of positive numbers.
+                int positiveLoop = negativeCount;
+               
+                //this loop continues till all the values in the array is squared.
+                while (positiveLoop < A.Length || negativeLoop >= 0)
+                {
+                    //assign only the positive square values to the squared array since there are no negative numbers.
+                    if (negativeLoop < 0)
+                    {
+                        squareArray[squareArrCnt] = A[positiveLoop] * A[positiveLoop];
+                        positiveLoop++;
+                        squareArrCnt++;
+                    }
+                    //assign only the negative square values to the squared array since there are no positive numbers.
+                    else if (positiveLoop >= A.Length)
+                    {
+                        squareArray[squareArrCnt] = A[negativeLoop] * A[negativeLoop];
+                        negativeLoop--;
+                        squareArrCnt++;
+                    }
+                    //assign the negative number square since negative number square is less than positive number square.
+                    else if (A[negativeLoop] * A[negativeLoop] < A[positiveLoop] * A[positiveLoop])
+                    {
+                        squareArray[squareArrCnt] = A[negativeLoop] * A[negativeLoop];
+                        negativeLoop--;
+                        squareArrCnt++;
+                    }
+                    //assign the positive number square since positive number square is less than negative number square.
+                    else
+                    {
+                        squareArray[squareArrCnt] = A[positiveLoop] * A[positiveLoop];
+                        positiveLoop++;
+                        squareArrCnt++;
+                    }
+
+                }
             }
-            catch
+            catch(Exception)
             {
                 Console.WriteLine("Exception occured while computing SortedSquares()");
             }
 
-            return new int[] { };
+            return squareArray;
         }
 
         public static bool ValidPalindrome(string s)
         {
             try
             {
-                // Write your code here
+                // Write your code here              
             }
             catch
             {
                 Console.WriteLine("Exception occured while computing ValidPalindrome()");
             }
 
-            return false;
+            return true;
         }
     }
 }
