@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 
 
 namespace _2019_Fall_Assignment2
@@ -140,19 +141,63 @@ namespace _2019_Fall_Assignment2
             return toSearch;
         }
 
+
+        // computes the intersection of arrays
         public static int[] Intersect(int[] nums1, int[] nums2)
         {
+            int[] array1 = { };
             try
             {
-                // Write your code here
+                int len1 = nums1.Length;
+                int len2 = nums2.Length;
+                //array to store the common values
+                ArrayList mylist = new ArrayList();
+                //Sorting array
+                Array.Sort(nums1);
+                Array.Sort(nums2);
+                int i = 0;
+                int j = 0;
+                //while loop to take out the common values in arrays
+                while (i < len1 && j < len2)
+                {
+                    if (nums1[i] == nums2[j])
+                    {
+                        mylist.Add(nums1[i]);
+
+
+                        i++; j++;
+
+                    }
+
+                    else if (nums1[i] < nums2[j])
+                    {
+                        i++;
+                    }
+
+                    else
+
+                        j++;
+
+                }
+                //loop for printing out the common array
+                for (int k = 0; k < mylist.Count; k++)
+                {
+                    Console.Write(mylist[k] + " ");
+                }
+                array1 = (int[])mylist.ToArray(typeof(int));
+
+
             }
+
             catch
             {
                 Console.WriteLine("Exception occured while computing Intersect()");
             }
 
-            return new int[] { };
+            return array1;
+
         }
+
 
         /*Given an array of integers A, this method  return the largest integer that only occurs once.
          If no integer occurs once, return -1.
@@ -252,14 +297,14 @@ namespace _2019_Fall_Assignment2
             try
             {
                 //initialize a temporaray array
-                int[,] tempArray = new int[1,2];
+                int[,] tempArray = new int[1, 2];
                 //get the length of the array.
                 int lastElement = A.GetUpperBound(0);
 
                 //Loop through the inner and outer array to loop through all the elements in the array.
                 for (int i = 0; i < A.GetLength(0); i++)
                 {
-                    for (int j = 0; j < A.GetLength(1) && lastElement >= 0 && j<= lastElement; j++, lastElement--)
+                    for (int j = 0; j < A.GetLength(1) && lastElement >= 0 && j <= lastElement; j++, lastElement--)
                     {
                         /*Flip the elements in the array using temporary array and then invert the values of array from 1 to 0 
                         and 0 to 1.*/
@@ -278,20 +323,68 @@ namespace _2019_Fall_Assignment2
             return A;
         }
 
+        /* Computes the minimum number of meeting rooms required to hold 
+         all the scheduled meetings in the specified start and end intervals*/
         public static int MinMeetingRooms(int[,] intervals)
         {
+            //intialize the minimum number of meeting rooms to 1.
+            int meetingRoomCnt = 1;
             try
             {
-                // Write your code here
+                //intialise a temporary variable.
+                int[,] temp = new int[2, 2];
+
+                //intialise a sarray to store the sorted start intervals from the intervals array.
+                int[] sarray = new int[intervals.GetLength(0)];
+
+                //intialise a earray to store the end intervals corressponding to the
+                //sorted start intervals from the intervals array.
+                int[] earray = new int[intervals.GetLength(0)];
+                int j = 0;
+                int k = 0;
+
+                //this for loop loops through all the elements in the intervals array 
+                //by sorting the start interval.
+                for (int i = 0; i < intervals.GetUpperBound(0); i++)
+                {
+                    //Sorting meeting intervals
+                    if (intervals[i, j] > intervals[i + 1, j])
+                    {
+                        temp[0, 0] = intervals[i, j];
+                        intervals[i, j] = intervals[i + 1, j];
+                        intervals[i + 1, j] = temp[0, 0];
+
+                        temp[0, 1] = intervals[i, j + 1];
+                        intervals[i, j + 1] = intervals[i + 1, j + 1];
+                        intervals[i + 1, j + 1] = temp[0, 1];
+                    }
+                }
+
+                //this for loop create separate arrays for both start and end intervals.
+                for (int i = 0; i <= intervals.GetUpperBound(0); i++, k++)
+                {
+                    sarray[k] = intervals[i, 0];
+                    earray[k] = intervals[i, 1];
+                }
+
+                //this for loop checks whether the end interval of current interval is greater than the
+                //start interval of next interval ,if it is greater increment the meetingroom counter.
+                for (int i = 1; i < sarray.Length; i++)
+                {
+                    if (sarray[i] < earray[i - 1])
+                    {
+                        meetingRoomCnt++;
+                    }
+                }
+
             }
-            catch
+            catch (Exception ex)
             {
                 Console.WriteLine("Exception occured while computing MinMeetingRooms()");
             }
-
-            return 0;
+            //return the meetingroom count.
+            return meetingRoomCnt;
         }
-
         /*Given an array of integers A sorted in non-decreasing order, return an array of the squares of each number,
             also in sorted non-decreasing order.The time complexity of the method should not exceed O(n)*/
         public static int[] SortedSquares(int[] A)
@@ -320,7 +413,7 @@ namespace _2019_Fall_Assignment2
                 int negativeLoop = negativeCount - 1;
                 //get the starting index of positive numbers.
                 int positiveLoop = negativeCount;
-               
+
                 //this loop continues till all the values in the array is squared.
                 while (positiveLoop < A.Length || negativeLoop >= 0)
                 {
@@ -355,7 +448,7 @@ namespace _2019_Fall_Assignment2
 
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 Console.WriteLine("Exception occured while computing SortedSquares()");
             }
@@ -394,3 +487,4 @@ namespace _2019_Fall_Assignment2
         }
     }
 }
+
