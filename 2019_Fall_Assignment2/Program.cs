@@ -9,13 +9,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace _2019_Fall_Assignment2
 {
     class Program
     {
+        public static int toSearch = 0;
+
         public static void Main(string[] args)
         {
-            Console.WriteLine(args);
             int target = 5;
             int[] nums = { 1, 3, 5, 6 };
             Console.WriteLine("Position to insert {0} is = {1}\n", target, SearchInsert(nums, target));
@@ -93,7 +95,10 @@ namespace _2019_Fall_Assignment2
         {
             try
             {
-                // Write your code here
+                int n = nums.Length;
+                int result = searchAlgo(nums, 0, n - 1, target);
+
+                return result; // Write your code here 
             }
             catch
             {
@@ -101,6 +106,38 @@ namespace _2019_Fall_Assignment2
             }
 
             return 0;
+        }
+
+        public static int searchAlgo(int[] nums, int l, int r, int x)
+        {
+
+            if (r >= l)
+            {
+                int mid = l + (r - l) / 2; //dividing into mid point for right and left half for o(logn)
+
+
+                if (nums[mid] == x)
+                    return mid;
+
+
+                else if (nums[mid] > x)
+                {
+                    toSearch = mid - 1;
+                    return searchAlgo(nums, l, mid - 1, x); // searching left half if number, notice recursion
+                }
+
+
+                // Else the element can only be present 
+                // in right half 
+                else
+                {
+                    toSearch = mid + 1;
+                    return searchAlgo(nums, mid + 1, r, x);
+                }
+
+
+            }
+            return toSearch;
         }
 
         public static int[] Intersect(int[] nums1, int[] nums2)
@@ -175,7 +212,30 @@ namespace _2019_Fall_Assignment2
         {
             try
             {
-                // Write your code here
+                IDictionary<char, int> d = new Dictionary<char, int>(); //create dict
+                char[] charArr = keyboard.ToCharArray(); //convert to char array
+                char[] wordArr = word.ToCharArray(); //convert to char array
+                int i = 0;
+                int temp = 0; int next = 0; int result = 0;
+                foreach (char ch in charArr)
+                {
+
+                    d.Add(ch, i); //add keyboard to dictionary
+                    i++;
+                }
+
+                //var d = charArr.ToDictionary(x => Array.IndexOf(charArr, x));
+
+                foreach (char ch in wordArr)
+                {
+                    next = d[ch];
+
+                    result = result + (Math.Abs(next - temp)); //calculate timings
+
+                    temp = next;
+                }
+                return result;
+                //Console.WriteLine("this is the keyboard time" + result);
             }
             catch
             {
@@ -221,8 +281,8 @@ namespace _2019_Fall_Assignment2
         public static int MinMeetingRooms(int[,] intervals)
         {
             try
-            {              
-                //Write your code here
+            {
+                // Write your code here
             }
             catch
             {
@@ -307,14 +367,30 @@ namespace _2019_Fall_Assignment2
         {
             try
             {
-                // Write your code here              
+                string copy = s;
+
+                if (!s.SequenceEqual(s.Reverse())) //initial palindrome check
+                {
+
+                    foreach (char ch in copy)
+                    {
+                        copy = s.Replace(ch.ToString(), string.Empty); //remove each and every character and check
+                        if (copy.SequenceEqual(copy.Reverse()))
+                        {
+                            return true;
+
+                        }// Write your code here
+                    }
+                }
+                else
+                    return true;
             }
             catch
             {
                 Console.WriteLine("Exception occured while computing ValidPalindrome()");
             }
 
-            return true;
+            return false;
         }
     }
 }
